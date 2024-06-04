@@ -20,15 +20,6 @@ import { FormEvent, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useOutsideClick } from './hooks/useOutsideClick';
 
-// дефолтные значения полей формы
-const defaultArticle = {
-	fontFamily: defaultArticleState.fontFamilyOption,
-	fontColor: defaultArticleState.fontColor,
-	backgroundColor: defaultArticleState.backgroundColor,
-	contentWidth: defaultArticleState.contentWidth,
-	fontSizeOption: defaultArticleState.fontSizeOption,
-};
-
 type ArticleParamsFormProps = {
 	setArticleState: (value: ArticleStateType) => void;
 };
@@ -37,30 +28,24 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const formRef = useRef<HTMLFormElement>(null);
 
 	// состояния полей формы сайдбара
-	const [fieldState, setFieldState] = useState(defaultArticle);
+	const [fieldState, setFieldState] = useState(defaultArticleState);
 
 	// сайдбар (отркыт/закрыт)
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	// клик по стрелке (отркыть/закрыть сайдбар)
-	const onClick = () => (isOpen ? setIsOpen(false) : setIsOpen(true));
+	const onClick = () => setIsOpen(!isOpen);
 
 	// обработчик отправки формы
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 		// применяем форматирование из формы к статье
-		props.setArticleState({
-			fontFamilyOption: fieldState.fontFamily,
-			fontColor: fieldState.fontColor,
-			backgroundColor: fieldState.backgroundColor,
-			contentWidth: fieldState.contentWidth,
-			fontSizeOption: fieldState.fontSizeOption,
-		});
+		props.setArticleState(fieldState);
 	};
 
 	// сброс полей формы
 	const handleReset = () => {
-		setFieldState(defaultArticle);
+		setFieldState(defaultArticleState);
 		props.setArticleState(defaultArticleState);
 	};
 
@@ -87,12 +72,12 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 
 					<Select
 						title='Шрифт'
-						selected={fieldState.fontFamily}
+						selected={fieldState.fontFamilyOption}
 						options={fontFamilyOptions}
 						onChange={(selected) =>
 							setFieldState((prevState) => ({
 								...prevState,
-								fontFamily: selected,
+								fontFamilyOption: selected,
 							}))
 						}
 					/>
